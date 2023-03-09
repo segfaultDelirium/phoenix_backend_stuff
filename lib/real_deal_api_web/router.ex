@@ -9,5 +9,6 @@ defmodule RealDealApiWeb.Router do
     pipe_through :api
     get "/", DefaultController, :index
     get "/weather", WeatherController, :get_sample_weather
+    post "/accounts/create", AccountController, :create
   end
 end

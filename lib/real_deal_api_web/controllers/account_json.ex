@@ -22,4 +22,13 @@ defmodule RealDealApiWeb.AccountJSON do
       hashed_password: account.hashed_password
     }
   end
+
+  def account_token(%{account: account, token: token}) do
+    %{
+      id: account.id,
+      email: account.email,
+      token: token
+    }
+  end
+
 end
