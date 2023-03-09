@@ -3,6 +3,7 @@ defmodule RealDealApiWeb.Auth.Guardian do
 
   alias RealDealApi.Accounts
 
+  @impl Guardian
   def subject_for_token(%{id: id}, _claims) do
     subject = to_string(id)
     {:ok, subject}
@@ -12,6 +13,7 @@ defmodule RealDealApiWeb.Auth.Guardian do
     {:error, :no_id_provided}
   end
 
+  @impl Guardian
   def resource_from_claims(%{"subject" => id}) do
     case Accounts.get_account!(id) do
       nil -> {:error, :not_found}
@@ -26,7 +28,8 @@ defmodule RealDealApiWeb.Auth.Guardian do
   def authenticate(email, password) do
     case Accounts.get_account_by_email(email) do
       nil ->
-        return_unauthorized(email)
+        {:error, :unauthorized}
+
       account ->
         case validate_password(password, account.hashed_password) do
           true -> create_token(account)
@@ -42,10 +45,5 @@ defmodule RealDealApiWeb.Auth.Guardian do
   defp create_token(account) do
     {:ok, token, _claims} = encode_and_sign(account)
     {:ok, account, token}
-  end
-
-  defp return_unauthorized(email) do
-    IO.puts("could not get account by email: " <> email)
-    {:error, :unauthorized}
   end
 end
