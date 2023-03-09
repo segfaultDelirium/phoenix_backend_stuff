@@ -36,6 +36,26 @@ defmodule RealDealApi.Accounts do
 
   """
   def get_account!(id), do: Repo.get!(Account, id)
+  
+  @doc """
+  Gets single account.
+
+  Returns 'nil' is the Account does not exist.
+
+  ## Examples
+
+    iex> get_account_by_email("test@email.com")
+    %Account{}
+
+    iex> get_account_by_email("no_account@email.com")
+    nil
+  """
+  def get_account_by_email(email) do
+    Account 
+    |> where(email: ^email)
+    |> Repo.one()
+    # Repo.get_by(Account, [email: email])
+  end
 
   @doc """
   Creates a account.
